@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>校園氣候友善移動建議系統 </title>
+  <!-- Tailwind、Google Font、Leaflet CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <!-- 本地 CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-100">
+ 
+  <!-- ＝＝＝ 把這段貼到這裡 ＝＝＝ -->
+  <div class="flex flex-col lg:flex-row h-screen">
+    <!-- 左側控制面板 -->
+    <div class="w-full lg:w-96 bg-white p-6 shadow-lg control-panel z-[1000]">
+      <div class="space-y-6">
+        <div class="text-center border-b pb-4">
+          <h1 class="text-2xl font-bold text-gray-800">氣候友善移動建議</h1>
+          <p class="text-sm text-gray-500">嘉義大學新民校區 (專家強化版)</p>
+        </div>
+        <!-- 1. 路線設定 -->
+        <div class="space-y-4">
+          <h3 class="text-lg font-semibold text-gray-700">1. 設定路線</h3>
+          <div>
+            <label for="startNode" class="block text-sm font-medium text-gray-700">選擇起點</label>
+            <select id="startNode" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 rounded-md"></select>
+          </div>
+          <div>
+            <label for="endNode" class="block text-sm font-medium text-gray-700">選擇終點</label>
+            <select id="endNode" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 rounded-md"></select>
+          </div>
+        </div>
+        <!-- 2. 情境模擬 -->
+        <div class="space-y-2">
+          <h3 class="text-lg font-semibold text-gray-700">2. 選擇情境</h3>
+          <div id="scenarios" class="grid grid-cols-2 gap-2">
+            <button data-scenario="normal" class="scenario-btn p-2 text-sm border rounded-md active">normal</button>
+            <button data-scenario="hot"    class="scenario-btn p-2 text-sm border rounded-md">hot</button>
+            <button data-scenario="pollution" class="scenario-btn p-2 text-sm border rounded-md">pollution</button>
+            <button data-scenario="live"  class="scenario-btn p-2 text-sm border rounded-md flex items-center justify-center gap-1">
+              <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                <circle cx="10" cy="10" r="5"/>
+              </svg> live
+            </button>
+          </div>
+
+          <details class="mt-2 p-2 bg-gray-50 rounded">
+  <summary class="cursor-pointer font-medium">備註：四種情境定義</summary>
+  <ul class="mt-2 list-disc pl-5 text-sm text-gray-700">
+    <li><strong>normal</strong>：使用中央氣象局（CWB ）即時溫度與 PM₂.₅，不做額外模擬。</li>
+    <li><strong>hot</strong>：對曝曬路段額外 +1～3°C，以模擬午後地表與體感高溫。</li>
+    <li><strong>pollution</strong>：對路邊路段額外 +2～4 PM₂.₅ 指數，反映車流排放集中。</li>
+    <li><strong>live</strong>：每 30 秒自動拉取最新環境數據並重算路線。</li>
+  </ul>
+</details>
+
+
+        </div>
+        <!-- 3. 移動偏好 -->
+        <div class="space-y-2">
+          <h3 class="text-lg font-semibold text-gray-700">3. 設定偏好</h3>
+          <div id="preference" class="space-y-2">
+            <button data-pref="balanced" class="pref-btn w-full p-3 rounded-lg border-2 border-indigo-600 bg-indigo-100 text-left">
+              <h4 class="font-bold text-indigo-800">智慧平衡推薦</h4>
+              <p class="text-xs text-indigo-600">綜合考量距離、舒適度與健康</p>
+            </button>
+            <button data-pref="comfort" class="pref-btn w-full p-3 rounded-lg border border-gray-300 bg-white text-left">
+              <h4 class="font-bold text-gray-800">舒適優先</h4>
+              <p class="text-xs text-gray-500">不計代價尋找最多遮蔭、最涼爽的路徑</p>
+            </button>
+            <button data-pref="health" class="pref-btn w-full p-3 rounded-lg border border-gray-300 bg-white text-left">
+              <h4 class="font-bold text-gray-800">健康優先</h4>
+              <p class="text-xs text-gray-500">極力避開 PM2.5 較高的區域</p>
+            </button>
+            
+             <button  data-pref="shortest" class="pref-btn w-full p-3 rounded-lg border border-gray-300 bg-white text-left">
+              <h4 class="font-bold text-gray-800">最短路徑</h4>
+            
+            </button>
+          </div>
+          <div class="flex items-center justify-between bg-gray-50 p-2 rounded-lg">
+            <label for="sun-sensitive-toggle" class="text-sm font-medium text-gray-700">我對日曬敏感</label>
+            <input type="checkbox" id="sun-sensitive-toggle" class="h-4 w-4 rounded text-indigo-600 border-gray-300">
+          </div>
+        </div>
+        <!-- 結果顯示區 -->
+     <div id="result" class="bg-gray-50 p-4 rounded-lg min-h-[150px]">
+          <p class="text-gray-500 text-center">請設定路線後，系統將自動規劃</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右側地圖顯示區 -->
+    <div class="flex-1 relative">
+      <div id="map">
+        <div id="map-loader" class="w-full h-full flex flex-col items-center justify-center text-gray-500">
+          <svg class="animate-spin h-8 w-8 mb-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C..."/></svg>
+          <p class="text-lg font-medium">真實地圖載入中...</p>
+        </div>
+      </div>
+      <div id="legend" class="hidden absolute bottom-4 right-4 bg-white bg-opacity-90 p-3 rounded-lg shadow-xl text-xs space-y-2">
+        <h4 class="font-bold text-center">路線圖例</h4>
+        <div class="flex items-center"><div class="w-8 h-1 bg-blue-500 rounded-full mr-2"></div> AI 智慧路徑</div>
+        <div class="flex items-center"><div class="w-8 h-1 border-t-2 border-dashed border-gray-600 mr-2"></div> 最短路徑</div>
+      </div>
+    </div>
+  </div>
+  <!-- ＝＝＝ 到此結束 ＝＝＝ -->
+
+  <!-- 載入 Leaflet 與你的 app.js -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+
+
+
+</html>
+

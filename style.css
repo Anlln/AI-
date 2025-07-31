@@ -1,0 +1,42 @@
+/* 基本字體與背景 */
+body { font-family: 'Noto Sans TC', sans-serif; }
+#map { height: 100%; width: 100%; background-color: #E5E7EB; }
+
+/* 控制面板 */
+.control-panel { max-height: 100vh; overflow-y: auto; }
+
+/* 感測器小點 */
+.sensor-dot { border-radius: 50%; opacity: 0.8; border: 1px solid rgba(255,255,255,0.6); transition: background-color 0.5s ease-in-out; }
+
+/* Tooltip 樣式 */
+.leaflet-tooltip { background-color: rgba(255, 255, 255, 0.9); border: 1px solid #ccc; border-radius: 4px; box-shadow: 0 1px 5px rgba(0,0,0,0.4); }
+
+/* 路徑閃爍動畫 */
+.path-flash { animation: flash 1s ease-out; }
+@keyframes flash { 0%, 100% { stroke: #3B82F6; } 50% { stroke: #FBBF24; stroke-width: 8; } }
+
+/* 情境按鈕：啟用時顏色 */
+.scenario-btn.active { background-color: #1D4ED8; color: white; }
+
+/* 感測器點樣式 */
+.temp-sensor-dot, .pm-sensor-dot {
+  opacity: 0.9;  /* 節點透明度 */
+  transition: all 0.3s ease;
+}
+
+.temp-sensor-dot:hover, .pm-sensor-dot:hover {
+  transform: scale(1.3);
+  opacity: 1;
+}
+
+/* 自訂提示框樣式 */
+.custom-tooltip {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
