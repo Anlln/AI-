@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
+
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,16 +16,27 @@
   <!-- 本地 CSS -->
   <link rel="stylesheet" href="css/style.css">
 </head>
+
+
+
+
+
 <body class="bg-gray-100">
  
+
+  
   <!-- ＝＝＝ 把這段貼到這裡 ＝＝＝ -->
-  <div class="flex flex-col lg:flex-row h-screen">
+  <div class="flex flex-col h-screen overflow-hidden">
     <!-- 左側控制面板 -->
-    <div class="w-full lg:w-96 bg-white p-6 shadow-lg control-panel z-[1000]">
+    <div class="w-72 bg-white p-6 shadow-lg control-panel z-[1000]">
       <div class="space-y-6">
         <div class="text-center border-b pb-4">
           <h1 class="text-2xl font-bold text-gray-800">氣候友善移動建議</h1>
-          <p class="text-sm text-gray-500">嘉義大學新民校區 (專家強化版)</p>
+          <p class="text-sm text-gray-500">嘉義大學新民校區 </p>
+           <button id="openModalBtn" class="px-3 py-1 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700">
+      回饋 & 詳情
+    </button>
+  </div>
         </div>
         <!-- 1. 路線設定 -->
         <div class="space-y-4">
@@ -97,8 +111,8 @@
     </div>
 
     <!-- 右側地圖顯示區 -->
-    <div class="flex-1 relative">
-      <div id="map">
+    <div class="flex-1 relative min-h-[300px] lg:min-h-0">
+      <div id="map" class="w-full h-full">
         <div id="map-loader" class="w-full h-full flex flex-col items-center justify-center text-gray-500">
           <svg class="animate-spin h-8 w-8 mb-4" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C..."/></svg>
           <p class="text-lg font-medium">真實地圖載入中...</p>
@@ -113,9 +127,60 @@
   </div>
   <!-- ＝＝＝ 到此結束 ＝＝＝ -->
 
+<!-- Modal -->
+<div id="feedbackModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center hidden z-[2000]">
+  <div class="bg-white w-96 rounded-xl shadow-lg p-6 space-y-4 relative">
+    <button id="closeModalBtn" class="absolute top-2 right-3 text-gray-500 text-lg">&times;</button>
+    <h2 class="text-xl font-bold text-gray-800 mb-2">回饋表</h2>
+    <!-- 回饋表單 -->
+    <form id="feedbackForm" class="space-y-3">
+      <div>
+        <label class="block text-sm font-medium">你的回饋</label>
+        <textarea name="message" class="w-full border rounded p-2" rows="3" required></textarea>
+      </div>
+      <div>
+        <label class="block text-sm font-medium">滿意程度 (1-5)</label>
+        <select name="rating" class="w-full border rounded p-2" required>
+          <option value="">請選擇</option>
+          <option>1 - 很不滿意</option>
+          <option>2</option>
+          <option>3 - 普通</option>
+          <option>4</option>
+          <option>5 - 非常滿意</option>
+        </select>
+      </div>
+      <button type="submit" class="w-full bg-indigo-600 text-white rounded py-2 hover:bg-indigo-700">
+        送出
+      </button>
+    </form>
+
+    <hr class="my-3">
+
+    <!-- 詳情介紹 -->
+    <h2 class="text-xl font-bold text-gray-800">專案詳情介紹</h2>
+    <div class="space-y-2 text-sm text-gray-700">
+      <div>
+        <h3 class="font-semibold">1. 為什麼要做這個專案？</h3>
+        <p>這個專案結合氣候資料與 AI，讓校園移動更安全舒適，降低日曬與空汙對學生的影響。</p>
+      </div>
+      <div>
+        <h3 class="font-semibold">2. 行銷策略與利害關係人</h3>
+        <p>預計推廣至校園社群與學生會，並與環保團體合作，讓更多使用者受益。</p>
+      </div>
+      <div>
+        <h3 class="font-semibold">3. 資源與落地可行性</h3>
+        <p>結合開放資料與學校現有基礎設施，專案能低成本實施並持續優化。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
   <!-- 載入 Leaflet 與你的 app.js -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/app.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js" defer></script>
+
 </body>
 
 

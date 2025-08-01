@@ -3,6 +3,8 @@ const CWB_API_KEY = "CWA-9565CFB8-7CCD-4E47-9B93-6A313A7C8E30";
 const EPA_API_KEY = "ead00f55-0b6c-44e6-8a33-624731a41418";
 
 
+
+
 // --- 資料定義 ---
 const baseNodes = {
   1: { name: "校門口", lat: 23.463095452135853, lng: 120.44121829575867 },
@@ -206,6 +208,36 @@ async function fetchAndUpdateRealData() {
   }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  initialize(); // 初始化地圖
+
+  // Modal 控制
+  const modal = document.getElementById('feedbackModal');
+  const openBtn = document.getElementById('openModalBtn');
+  const closeBtn = document.getElementById('closeModalBtn');
+  const feedbackForm = document.getElementById('feedbackForm');
+
+  openBtn.addEventListener('click', () => modal.classList.remove('hidden'));
+  closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.classList.add('hidden');
+  });
+
+  feedbackForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    emailjs.send("你的_service_id", "你的_template_id", {
+      message: this.message.value,
+      rating: this.rating.value
+    }).then(() => {
+      alert("感謝你的回饋！");
+      modal.classList.add('hidden');
+      this.reset();
+    }).catch(err => {
+      alert("寄送失敗，請稍後再試");
+      console.error(err);
+    });
+  });
+});
 
 // 在所有其他函式之後、initialize 之前，新增：
 function redrawAndFlash() {
@@ -327,10 +359,14 @@ setInterval(async () => {
   await fetchAndUpdateRealData();
 }, 5 * 60 * 1000);
 
+// Leaflet 重新計算地圖尺寸，避免 Modal 影響載入速度
+setTimeout(() => {
+  map.invalidateSize();
+}, 500);
+
 
 }
 
-document.addEventListener('DOMContentLoaded', initialize);
 
 // --- 填選單 ---
 function populateSelectors() {
@@ -617,4 +653,6 @@ function runLiveSimulation() {
     findAndDrawRoute(true);
   }
 }
+
+
 

@@ -1,9 +1,17 @@
 /* 基本字體與背景 */
 body { font-family: 'Noto Sans TC', sans-serif; }
-#map { height: 100%; width: 100%; background-color: #E5E7EB; }
+#map {
+  height: 100%;
+  min-height: 400px; /* 防止高度為0，給個最小高度 */
+  width: 100%;
+  background-color: #E5E7EB;
+}
 
 /* 控制面板 */
-.control-panel { max-height: 100vh; overflow-y: auto; }
+.control-panel { height: 100%;
+  max-height: 100%;
+  overflow-y: auto; }
+
 
 /* 感測器小點 */
 .sensor-dot { border-radius: 50%; opacity: 0.8; border: 1px solid rgba(255,255,255,0.6); transition: background-color 0.5s ease-in-out; }
@@ -37,6 +45,7 @@ body { font-family: 'Noto Sans TC', sans-serif; }
   padding: 6px 8px;
   font-size: 12px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  
 }
 
 
